@@ -1,7 +1,7 @@
 import type { Uri } from "vscode";
 import type { SourceFile } from "ts-morph";
 
-export type SupportedFramework = "express" | "nestjs" | "fastify" | "unknown";
+export type SupportedFramework = "express" | "nestjs" | "unknown";
 export type HttpMethod = "get" | "post" | "put" | "patch" | "delete" | "head" | "options";
 export type Confidence = "high" | "medium" | "low";
 export type ParameterLocation = "path" | "query" | "header" | "cookie";
@@ -107,7 +107,7 @@ export interface ScanResult {
 export interface HappyDocsConfig {
   include: string[];
   exclude: string[];
-  frameworks: Array<"express" | "nestjs" | "fastify">;
+  frameworks: Array<"express" | "nestjs">;
   outputDirectory: string;
   openapiFormat: "yaml" | "json";
   apiTitle: string;
