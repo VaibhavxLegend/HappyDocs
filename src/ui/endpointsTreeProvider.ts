@@ -24,7 +24,7 @@ export class EndpointsTreeProvider implements vscode.TreeDataProvider<TreeNode>,
   getChildren(element?: TreeNode): TreeNode[] {
     if (element instanceof EndpointNode) return [];
     if (element instanceof GroupNode)
-      return element.endpoints.map((endpoint) => new EndpointNode(endpoint));
+      return element.endpoints.map((endpoint) => new EndpointNode(endpoint, this.registry));
     const groups = new Map<string, ApiEndpoint[]>();
     for (const endpoint of this.registry.all()) {
       const tag = endpoint.tags[0] ?? "Default";
@@ -59,14 +59,19 @@ class GroupNode extends vscode.TreeItem {
 }
 
 export class EndpointNode extends vscode.TreeItem {
-  constructor(readonly endpoint: ApiEndpoint) {
+  constructor(readonly endpoint: ApiEndpoint, registry: EndpointRegistry) {
     super(
       `${endpoint.method.toUpperCase()} ${endpoint.fullPath}`,
       vscode.TreeItemCollapsibleState.None
     );
     this.contextValue = "happyDocs.endpoint";
-    this.description =
-      endpoint.confidence === "high" ? undefined : `${endpoint.confidence} confidence`;
+
+    const isVerified = registry.getVerification(endpoint.id)?.reachable;
+    this.description = isVerified
+      ? `✓ Verified`
+      : endpoint.confidence === "high"
+        ? undefined
+        : `${endpoint.confidence} confidence`;
     this.tooltip = `${endpoint.framework} • ${endpoint.source.filePath}:${endpoint.source.line}`;
     this.iconPath = new vscode.ThemeIcon(iconFor(endpoint.method));
     this.command = {

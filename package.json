@@ -2,7 +2,7 @@
   "name": "happy-docs",
   "displayName": "HappyDocs",
   "description": "Generate accurate API documentation from Express and NestJS source code.",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "publisher": "happydocs",
   "license": "MIT",
   "repository": {
@@ -53,6 +53,16 @@
         "command": "happyDocs.enrichDocumentation",
         "title": "Hybrid API Docs: Enrich Documentation with AI",
         "icon": "$(sparkle)"
+      },
+      {
+        "command": "happyDocs.enrichAllEndpoints",
+        "title": "Hybrid API Docs: Enrich All Documentation with AI",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "happyDocs.verifyEndpoints",
+        "title": "Hybrid API Docs: Verify Endpoints",
+        "icon": "$(check)"
       },
       {
         "command": "happyDocs.clearScanResults",
@@ -113,6 +123,11 @@
         },
         {
           "command": "happyDocs.exportMarkdown",
+          "when": "view == happyDocs.endpoints",
+          "group": "navigation"
+        },
+        {
+          "command": "happyDocs.verifyEndpoints",
           "when": "view == happyDocs.endpoints",
           "group": "navigation"
         }
