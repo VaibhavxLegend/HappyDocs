@@ -1,0 +1,83 @@
+openapi: 3.1.0
+info:
+  title: HappyDocs Example API
+  version: 1.0.0
+  description: Example documentation generated directly from the Express fixture.
+servers:
+  - url: http://localhost:3000
+paths:
+  /users/{id}:
+    get:
+      operationId: express_example_get_user
+      tags:
+        - Users
+      summary: Retrieves a user by ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: includePosts
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: object
+                    additionalProperties: true
+                  includePosts:
+                    type: object
+                    additionalProperties: true
+      security:
+        - bearerAuth: []
+      x-source-location:
+        filePath: examples/express/server.ts
+        line: 9
+        column: 1
+      x-happydocs-confidence: high
+  /users:
+    post:
+      operationId: express_example_create_user
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: object
+                  additionalProperties: true
+      responses:
+        "201":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: object
+                    additionalProperties: true
+      x-source-location:
+        filePath: examples/express/server.ts
+        line: 17
+        column: 1
+      x-happydocs-confidence: high
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

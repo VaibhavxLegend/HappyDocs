@@ -1,0 +1,244 @@
+{
+  "name": "happy-docs",
+  "displayName": "HappyDocs",
+  "description": "Generate accurate API documentation from Express and NestJS source code.",
+  "version": "0.1.0",
+  "publisher": "happydocs",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/example/happy-docs"
+  },
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Other",
+    "Visualization"
+  ],
+  "activationEvents": [
+    "onCommand:happyDocs.scanProject",
+    "onCommand:happyDocs.rescanProject",
+    "onView:happyDocs.endpoints"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "happyDocs.scanProject",
+        "title": "Hybrid API Docs: Scan Project",
+        "icon": "$(search)"
+      },
+      {
+        "command": "happyDocs.rescanProject",
+        "title": "Hybrid API Docs: Rescan Project",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "happyDocs.previewDocumentation",
+        "title": "Hybrid API Docs: Preview Documentation",
+        "icon": "$(preview)"
+      },
+      {
+        "command": "happyDocs.exportOpenApi",
+        "title": "Hybrid API Docs: Export OpenAPI",
+        "icon": "$(export)"
+      },
+      {
+        "command": "happyDocs.exportMarkdown",
+        "title": "Hybrid API Docs: Export Markdown",
+        "icon": "$(export)"
+      },
+      {
+        "command": "happyDocs.enrichDocumentation",
+        "title": "Hybrid API Docs: Enrich Documentation with AI",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "happyDocs.clearScanResults",
+        "title": "Hybrid API Docs: Clear Scan Results",
+        "icon": "$(clear-all)"
+      },
+      {
+        "command": "happyDocs.setOpenAiKey",
+        "title": "Hybrid API Docs: Set OpenAI API Key"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "happyDocs",
+          "title": "API Docs",
+          "icon": "resources/happy-docs.svg"
+        }
+      ]
+    },
+    "views": {
+      "happyDocs": [
+        {
+          "id": "happyDocs.endpoints",
+          "name": "API Docs",
+          "when": "workspaceFolderCount > 0"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "happyDocs.scanProject",
+          "when": "view == happyDocs.endpoints",
+          "group": "navigation@1"
+        },
+        {
+          "command": "happyDocs.previewDocumentation",
+          "when": "view == happyDocs.endpoints",
+          "group": "navigation@2"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "happyDocs.previewDocumentation",
+          "when": "view == happyDocs.endpoints && viewItem == happyDocs.endpoint",
+          "group": "inline@1"
+        },
+        {
+          "command": "happyDocs.enrichDocumentation",
+          "when": "view == happyDocs.endpoints && viewItem == happyDocs.endpoint",
+          "group": "inline@2"
+        },
+        {
+          "command": "happyDocs.exportOpenApi",
+          "when": "view == happyDocs.endpoints",
+          "group": "navigation"
+        },
+        {
+          "command": "happyDocs.exportMarkdown",
+          "when": "view == happyDocs.endpoints",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "HappyDocs",
+      "properties": {
+        "hybridApiDocs.include": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "src/**/*.{ts,tsx,js,jsx}",
+            "app/**/*.{ts,tsx,js,jsx}",
+            "routes/**/*.{ts,tsx,js,jsx}",
+            "controllers/**/*.{ts,tsx,js,jsx}"
+          ],
+          "description": "Source globs to scan."
+        },
+        "hybridApiDocs.exclude": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/node_modules/**",
+            "**/dist/**",
+            "**/build/**",
+            "**/coverage/**",
+            "**/*.test.*",
+            "**/*.spec.*",
+            "**/*.generated.*"
+          ],
+          "description": "Globs that are never scanned."
+        },
+        "hybridApiDocs.frameworks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "express",
+              "nestjs"
+            ]
+          },
+          "default": [
+            "express",
+            "nestjs"
+          ],
+          "description": "Framework adapters to enable."
+        },
+        "hybridApiDocs.outputDirectory": {
+          "type": "string",
+          "default": "docs/api",
+          "description": "Relative output directory."
+        },
+        "hybridApiDocs.openapiFormat": {
+          "type": "string",
+          "enum": [
+            "yaml",
+            "json"
+          ],
+          "default": "yaml"
+        },
+        "hybridApiDocs.apiTitle": {
+          "type": "string",
+          "default": "My API"
+        },
+        "hybridApiDocs.apiVersion": {
+          "type": "string",
+          "default": "1.0.0"
+        },
+        "hybridApiDocs.apiDescription": {
+          "type": "string",
+          "default": "API documentation generated by HappyDocs."
+        },
+        "hybridApiDocs.baseUrl": {
+          "type": "string",
+          "default": "http://localhost:3000"
+        },
+        "hybridApiDocs.enableAiEnrichment": {
+          "type": "boolean",
+          "default": false,
+          "description": "Allow the explicit AI enrichment command. Scanning never sends source code to AI."
+        },
+        "hybridApiDocs.aiProvider": {
+          "type": "string",
+          "enum": [
+            "openai"
+          ],
+          "default": "openai"
+        },
+        "hybridApiDocs.maxFiles": {
+          "type": "number",
+          "default": 2500,
+          "minimum": 1,
+          "description": "Safety cap for files per scan."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p .",
+    "watch": "tsc -watch -p .",
+    "lint": "eslint src tests --ext .ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "package": "npm run compile && vsce package"
+  },
+  "dependencies": {
+    "ts-morph": "^24.0.0",
+    "yaml": "^2.5.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "@types/vscode": "^1.95.0",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
+    "@vscode/vsce": "^3.2.0",
+    "eslint": "^9.16.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.65.0",
+    "vitest": "^2.1.8"
+  }
+}
